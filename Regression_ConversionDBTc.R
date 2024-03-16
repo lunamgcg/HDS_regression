@@ -27,29 +27,30 @@ library(Metrics)
 
 #################### Dataset HDS_catalyst #############################
 
-dataor <- read.csv("HDS2/DataregreHDS_DBT_orig_prossord_julio4.csv", header = TRUE)
+dataor <- read.csv("~/HDS_regression-main/HDS_regression-main/DataregreHDS_DBT_Source.csv", header = TRUE)
 
 #string date
-lab <- read.csv("HDS2/ListtextHDS_cat.csv", header = FALSE)
+lab <- read.csv("~/HDS_regression-main/HDS_regression-main/ListtextHDS_cat.csv", header = FALSE)
 lab <- lab[,-1]
 
 ################## Data processing ######################################
-datos <- dataor[,9:40]
+datos <- dataor[,6:37]
 
 sel <-replace(datos$Selectivity, datos$Selectivity>3, 0)
+
 datos$Selectivity <-replace(datos$Selectivity, datos$Selectivity>3, max(sel))
 C_n <- colnames(datos)
 
 #_________String data_______________
 cat_n <- c("No_Metals","Metal_cat1_","Metal_cat2_","Element_1_support_","Element_2_support_",
            "Element_3_support_", "Nano","Mesostructure","Promoters","Impregnation_method","Aditive","Kind_cat","Support_1","Support_2",
-           "P_Mo","P_Ni","P_Co","P_W","P_Al","P_Si","P_Ti","Structure_directing_agent")
+           "P_Mo","P_Ni","P_Co","P_W","P_Si","P_Al","P_Ti","Structure_directing_agent")
 
 #__________Numerical data___________
 d_N <- c("Temperature","Surface_area","Pore_size","Pressure_H2","Selectivity",
          "Conversion_DBT","Reaction_time","Slab_length","Stacking_grade","Dispersion")
 
-#Data conversion from string to ordinals
+#Data conversion from string to nominals
 o=0
 for (i in 1:length(cat_n)) {
   o=o+1
@@ -87,8 +88,8 @@ for (i in 1:length(d_N)){
 datapros <- datos
 skim(datos)
 
-write.csv(datapros, "HDS2/datapros1.csv")
-datosp <- read.csv("HDS2/datapros1.csv", header = TRUE)
+write.csv(datapros, "~/HDS_regression-main/HDS_regression-main/datapros1.csv")
+datosp <- read.csv("~/HDS_regression-main/HDS_regression-main/datapros1.csv", header = TRUE)
 datosp <- datosp[,-1]
 
 datos <-datosp
@@ -362,7 +363,7 @@ library(glmnet)
 library(dplyr)  
 library(psych)  
 
-datosp <- read.csv("HDS2/datapros1.csv", header = TRUE)
+datosp <- read.csv("~/HDS_regression-main/HDS_regression-main/datapros1.csv", header = TRUE)
 datosp <- datosp[,-1]
 
 
@@ -396,11 +397,15 @@ Y_out <- data.frame("Y_ori"= y, "Y_pred"=y_hat_cv)
 y1_test <- y_test
 
 Ridlm <- lm(Conversion_DBT~s0,data = Y_out)
-dev.new(width=8, height=10, unit="cm")
-plot(y,y_hat_cv,col="green", cex.lab=0.8, cex.axis=0.8, cex.main=1, cex.sub=0.8,main="Ridge regression",xlab="Observed Conversion of DBT",ylab = "Predicted Conversion of DBT",cex=0.8,xlim=c(0,1.1),ylim=c(0,1.14))
-points(y1_test,pred_Ridopt, col="blue",cex.lab=0.8, cex.axis=0.8, cex.main=1, cex.sub=0.8,cex=0.8,add=TRUE)
+dev.new(width=8, height=8, unit="cm")
+plot(y,y_hat_cv,col="green", cex.lab=1, cex.axis=1.2, cex.main=1.1, cex.sub=1,main="Ridge regression",xlab="Observed Conversion of DBT",ylab = "Predicted Conversion of DBT",cex=0.8,xlim=c(0,1.1),ylim=c(0,1.14))
+points(y1_test,pred_Ridopt, col="blue",cex.lab=1, cex.axis=1, cex.main=1.1, cex.sub=1,cex=1,add=TRUE)
 abline(Ridlm,col="black")
 print(Ridlm)
+
+Ridtest <- cbind(y1_test,pred_Ridopt)
+Ridally <- cbind(y,y_hat_cv)
+
 ###############################################################
 #Plot Coefficient optimal Ridge 
 ###############################################################
@@ -420,7 +425,10 @@ R_df_coef %>%
   xlab("predictors")+
   ylab("coefficient")+  
   theme_bw() +
-  theme(axis.text.x = element_text(size = 8, angle = 90))
+  
+  theme(axis.text.x = element_text(family="Times",size = 12, angle = 90,color="black"))+
+  
+  theme(axis.text.y = element_text(family="Times",size = 12,color="black"))
 
 # Use information criteria to select lambda -----------------------------------
 #X_scaled <- scale(X)
@@ -516,10 +524,12 @@ Y_out <- data.frame("Y_ori"= y, "Y_pred"=y_hat_cv)
 y1_test <- y_test
 
 Ridlm <- lm(Conversion_DBT~s0,data = Y_out)
-plot(y,y_hat_cv,col="green", main="Lasso regression",cex.lab=0.8, cex.axis=0.8, cex.main=1, cex.sub=0.8,xlab="Observed Conversion of DBT",ylab = "Predicted Conversion of DBT",,cex=0.8,xlim=c(0,1.1),ylim=c(0,1.14))
-points(y1_test,pred_Lasopt, col="blue",cex.lab=0.8, cex.axis=0.8, cex.main=1, cex.sub=0.8,,cex=0.8,add=TRUE)
+plot(y,y_hat_cv,col="green", main="Lasso regression",cex.lab=1, cex.axis=1.2, cex.main=1.1, cex.sub=1,xlab="Observed Conversion of DBT",ylab = "Predicted Conversion of DBT",,cex=0.8,xlim=c(0,1.1),ylim=c(0,1.14))
+points(y1_test,pred_Lasopt, col="blue",cex.lab=1, cex.axis=1.2, cex.main=1.1, cex.sub=1,cex=1,add=TRUE)
 abline(Ridlm,col="black")
 print(Ridlm)
+
+Lastest <- cbind(y1_test,pred_Lasopt)
 
 L_df_coef= coef(model_cv)
 print(L_df_coef)
@@ -533,11 +543,14 @@ L_df_coef %>%
   filter(predictor != "(Intercept)") %>%
   ggplot(aes(x = predictor, y = coeficiente)) +
   geom_col() +
-  labs(title = "Coefficients for Lasso model") +
+  #labs(title = "Coefficients for Lasso model") +
   xlab("predictors")+
-  ylab("coefficient")+ 
+  ylab("coefficient")+
+  #axis.title.x = element_text(color="blue", size=14, face="bold")+
   theme_bw() +
-  theme(axis.text.x = element_text(size = 8, angle = 90))
+  theme(axis.text.x = element_text(family="Times",size = 12, angle = 90,color="black"))+
+  
+  theme(axis.text.y = element_text(family="Times",size = 12,color="black"))
 L_df_coef %>%
   filter(
     predictor != "(Intercept)",
@@ -615,15 +628,20 @@ rf_r2 <- cor(datos_test$Conversion_DBT, pred_rfopt)^2
 
 rlm <- lm(Y_ori~Y_pred,data = Y_out)
 
-plot(datos$Conversion_DBT,pred_allrf,col="green", cex.lab=0.8, cex.axis=0.8, cex.main=1, cex.sub=0.8,,cex=0.8, main="Random Forest regression", ylim=c(0,1), xlim=c(0,1),xlab="Observed Conversion of DBT",ylab = "Predicted Conversion of DBT")
-points(datos_test$Conversion_DBT,pred_rfopt, col="blue",cex.lab=0.8, cex.axis=0.8, cex.main=1, cex.sub=0.8,,cex=0.8, add=TRUE)
+plot(datos$Conversion_DBT,pred_allrf,col="green", cex.lab=1, cex.axis=1.2, cex.main=1.1, cex.sub=1,,cex=1, main="Random Forest regression", ylim=c(0,1), xlim=c(0,1),xlab="Observed Conversion of DBT",ylab = "Predicted Conversion of DBT")
+points(datos_test$Conversion_DBT,pred_rfopt, col="blue",cex.lab=1, cex.axis=1.2, cex.main=1.1, cex.sub=1,cex=1, add=TRUE)
 abline(rlm,col="black",add=TRUE)
+
+print(rlm)
+
+RFtesty <- cbind(datos_test$Conversion_DBT,pred_rfopt)
+RFtestall <- cbind(datos$Conversion_DBT,pred_allrf)
 
 importancia_pred <- rf_opt$importance %>%
   enframe(name = "predictor", value = "importance")
 
 print(importancia_pred)
-# Gráfico
+# plot
 ggplot(
   data = importancia_pred,
   aes(x    = reorder(predictor, importance),
@@ -634,7 +652,13 @@ ggplot(
   geom_col() +
   coord_flip() +
   theme_bw() +
-  theme(legend.position = "none")
+  theme(legend.position = "none")+
+  theme_bw() +
+  theme(axis.text.x = element_text(family="Times",size = 12,color="black"))+
+  #theme(axis.text.y = element_text(size = 14, angle = 90))
+  #p +
+  theme(axis.text.y = element_text(family="Times",size = 12,color="black"))
+  
 
 set.seed(1234)
 
