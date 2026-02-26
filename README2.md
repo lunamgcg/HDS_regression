@@ -27,5 +27,3 @@ Out of 81 papers discussing the conversion of dibenzothiophene (DBT), selectivit
 To clean the data, any records with null values were removed. Out of 30 predictors, 21 are related to composition, 3 pertain to experimental conditions, and 5 relate to structural parameters. Outliers with high values were replaced with the maximum value of the respective feature. The composition predictors were transformed into nominal values. Finally, all data were standardized so that each variable has a minimum value of 0 and a maximum value of 1.
 
 
-<img width="442" height="647" alt="image" src="https://github.com/user-attachments/assets/294f656d-66ea-497e-851f-4e3c86774eaf" />
-
