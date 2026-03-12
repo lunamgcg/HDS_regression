@@ -1,5 +1,6 @@
 # Estimation of conversion rates and selectivity in the hydrodesulfurization of dibenzothiophene (DBT) using supervised machine learning.
 
+
 The hydrodesulfurization (HDS) process is commonly used to remove sulfur compounds from fuels, but eliminating dibenzothiophene (DBT) and its derivatives is challenging. 
 This study examines factors affecting catalyst efficiency in HDS of DBT using machine learning (ML) algorithms.
 It is applied Lasso, Ridge, and Random Forest regression techniques to estimate DBT conversion and selectivity. 
@@ -26,4 +27,27 @@ Out of 81 papers discussing the conversion of dibenzothiophene (DBT), selectivit
 -Preprocessing
 To clean the data, any records with null values were removed. Out of 30 predictors, 21 are related to composition, 3 pertain to experimental conditions, and 5 relate to structural parameters. Outliers with high values were replaced with the maximum value of the respective feature. The composition predictors were transformed into nominal values. Finally, all data were standardized so that each variable has a minimum value of 0 and a maximum value of 1.
 
+-Training
+It is used cross-validation with ten-folds.
 
+-Models of supervised machine learning
+
+ - Random forest
+ - Lasso regression
+ - Ridge regression
+
+- Model evaluation
+The models' estimates are assessed using the R², Mean Absolute Error (MAE), and Root Mean Square Error (RMSE) metrics.
+
+# Results
+
+Estimating the objective variables using Lasso, Ridge, and Random Forest regression methods allowed for the identification of the most suitable approach. Moreover, Ridge and Lasso regressions are particularly beneficial for datasets with limited data.
+
+Among the methods examined, Ridge regression proved to be the least effective for estimating the conversion of DBT. In contrast, Random Forest demonstrated a satisfactory capacity for predicting conversion and recognized selectivity and surface area as important predictors, aligning with existing scientific literature.
+
+Additionally, regularized regression methods are well-suited for determining selectivity. Analyzing the regression coefficients helps identify key predictors for estimating selectivity, including pore size, surface area, slab length, and stacking grade, which may be related to the active sites and diffusion phenomena in these materials.
+
+This information provides essential insights into hydrodesulfurization (HDS) catalysts and the critical factors influencing their performance, which are vital for catalyst design.
+
+# For more information visit:
+http://doi.org/10.1002/open.202400062
